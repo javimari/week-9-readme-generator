@@ -25,7 +25,7 @@
   ## Contributing
   add to and clean up code
   
-  ## Tests
+  ## My gif
   
   
   ## Questions
