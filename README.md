@@ -25,7 +25,8 @@
   ## Contributing
   add to and clean up code
   
-  ## My gif
+  ## My GIF
+  ![](https://github.com/javimari/week-9-readme-generator/blob/main/readmegen.gif)
   
   
   ## Questions
