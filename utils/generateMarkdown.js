@@ -1,83 +1,79 @@
-// Import necessary modules
-const fs = require('fs');
-const inquirer = require('inquirer');
-const generateMarkdown = require('./utils/generateMarkdown');
-
-// List of questions to collect user input for the README file
-const questions = [
-    {
-        type: 'input',
-        name: 'title', 
-        message: 'Enter the title of your project:',
-    },
-    {
-        type: 'input',
-        name: 'description',
-        message: 'Provide a short description of your project:',
-    },
-    {
-        type: 'input',
-        name: 'installation',
-        message: 'Describe the installation process:',
-    },
-    {
-        type: 'input',
-        name: 'usage',
-        message: 'Provide instructions for using the project:',
-    },
-    {
-        type: 'list',
-        name: 'license',
-        message: 'Choose a license for your project:',
-        choices: ['MIT', 'Apache 2.0', 'GPL 3.0', 'BSD 3-Clause', 'None'],
-    },
-    {
-        type: 'input',
-        name: 'contributing',
-        message: 'Explain how others can contribute to the project:',
-    },
-    {
-        type: 'input',
-        name: 'tests',
-        message: 'Provide instructions on how to run tests for your project:',
-    },
-    {
-        type: 'input',
-        name: 'github',
-        message: 'Enter your GitHub username:',
-    },
-    {
-        type: 'input',
-        name: 'email',
-        message: 'Enter your email address:',
+// Function to return a license badge based on the selected license
+// If no license is provided, it returns an empty string
+function renderLicenseBadge(license) {
+    const licenseBadges = {
+      'MIT': '[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)',
+      'Apache 2.0': '[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)',
+      'GPL 3.0': '[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)',
+      'BSD 3-Clause': '[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)',
+      'None': '' // Return an empty string if no license is selected
+    };
+    return licenseBadges[license] || ''; // Default to an empty string if license not found
+  }
+  
+  // Function to return the corresponding license link
+  // If no license is provided, it returns an empty string
+  function renderLicenseLink(license) {
+    const licenseLinks = {
+      'MIT': '[MIT](https://opensource.org/licenses/MIT)',
+      'Apache 2.0': '[Apache 2.0](https://opensource.org/licenses/Apache-2.0)',
+      'GPL 3.0': '[GPL 3.0](https://www.gnu.org/licenses/gpl-3.0)',
+      'BSD 3-Clause': '[BSD 3-Clause](https://opensource.org/licenses/BSD-3-Clause)',
+      'None': '' // Return an empty string if no license is selected
+    };
+    return licenseLinks[license] || ''; // Default to an empty string if license not found
+  }
+  
+  // Function to generate the license section for the README
+  // Returns a message based on the license selected, or an empty string if none
+  function renderLicenseSection(license) {
+    if (license === 'None') {
+      return 'This project is not licensed.'; // Return a specific message if no license is selected
     }
-];
-
-// Function to write data to a README file
-function writeToFile(fileName, data) {
-    fs.writeFile(fileName, data, (err) => {
-        if (err) {
-            console.error('Error writing file:', err);
-        } else {
-            console.log('README.md has been created successfully!');
-        }
-    });
-}
-
-// Function to initialize the application
-function init() {
-    // Prompt the user with the list of questions
-    inquirer.prompt(questions)
-        .then((answers) => {
-            // Generate markdown content using user-provided answers
-            const markdown = generateMarkdown(answers);
-            // Write the generated content to 'README.md'
-            writeToFile('README.md', markdown);
-        })
-        .catch((error) => {
-            console.error('An error occurred during initialization:', error);
-        });
-}
-
-// Start the application
-init();
+    return `This project is licensed under the ${renderLicenseLink(license)} license.`; // Include the license link in the section
+  }
+  
+  // Function to generate the markdown content for the README file
+  function generateMarkdown(data) {
+    return `# ${data.title}
+  
+  ${renderLicenseBadge(data.license)} // Include the license badge at the top
+  
+  ## Description
+  ${data.description}
+  
+  ## Table of Contents
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [License](#license)
+  - [Contributing](#contributing)
+  - [Tests](#tests)
+  - [Questions](#questions)
+  
+  ## Installation
+  ${data.installation}
+  
+  ## Usage
+  ${data.usage}
+  
+  ## License
+  ${renderLicenseSection(data.license)} // Include the license section
+  
+  ## Contributing
+  ${data.contributing}
+  
+  ## Tests
+  ${data.tests}
+  
+  ## Questions
+  If you have any questions, feel free to reach out:
+  - GitHub: [${data.github}](https://github.com/${data.github})
+  - Email: ${data.email}
+  
+  For additional inquiries, contact me via email at the provided address.
+  `;
+  }
+  
+  // Export the generateMarkdown function to be used in other modules
+  module.exports = generateMarkdown;
+  
